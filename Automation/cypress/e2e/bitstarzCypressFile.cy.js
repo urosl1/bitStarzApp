@@ -1,21 +1,39 @@
 import variables from '../fixtures/example.json'
+import { faker } from '@faker-js/faker'
+import '../support/commands'
+
+const name = faker.person.firstName()
+const lastname = faker.person.lastName()
+const number = faker.number.int(5)
+const mail = name+number+lastname+('@gmail.com')
+const username = faker.internet.userName()
+const password = faker.internet.password()
 
 
 
 describe('example to-do app', () => { 
   beforeEach(() => {
+      
       cy.viewport(1920, 1080)
       cy.visit('/')
     })
     
     it('Registration', () => {
-        
+       
+      cy.on("uncaught:exception", (e, runnable) => {
+        console.log("error", e);
+        console.log("runnable", runnable);
+        console.log("error", e.message);
+        return false;
+        });
+
         cy.get('[data-cy="signup_btn_header"]').click()
-        cy.get('[data-cy="cy-sign-up-email-step-input"]').type(variables.email)
-        cy.get('[data-cy="cy-sign-up-email-step-button"]').click()
-        cy.get('[data-cy="cy-sign-up-username-step-input"]').type(variables.username)
+        cy.get('[data-cy="cy-sign-up-email-step-input"]').type(mail);
+        cy.get('[data-cy="cy-sign-up-email-step-button"]').click();
+        cy.wait(1000)
+        cy.get('[data-cy="cy-sign-up-username-step-input"]').type(username)
         cy.get('[data-cy="cy-sign-up-username-step-button"]').click()
-        cy.get('[data-cy="cy-sign-up-password-step-input"]').type(variables.password)
+        cy.get('[data-cy="cy-sign-up-password-step-input"]').type(password)
         cy.get('[data-cy="cy-sign-up-password-step-button"]').click()
         cy.get('[data-cy="cy-currency-moda-list"] > :nth-child(1)').click()
         cy.get('[data-cy="cy-sign-up-terms-step-btn"]').click()
@@ -44,7 +62,9 @@ describe('example to-do app', () => {
 
     it('The Elvis From Example', () => {
         cy.get('#gameSearchInput').type(variables.gameName)
-        cy.get('[alt="Elvis Frog TRUEWAYS Slot"]').click()
+        cy.get('[alt="Elvis Frog TRUEWAYS Slot"]').should('exist').click()
+        cy.url().should('eq', 'https://test.bitstarz.com/slots/elvis-frog-trueways');
+
       })
         
 
